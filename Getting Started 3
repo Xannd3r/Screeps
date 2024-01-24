@@ -37,6 +37,7 @@ Create the module role.builder with a behavior logic for a new creep.
 var roleBuilder = {
 
     /** @param {Creep} creep **/
+/**
     run: function(creep) {
 
 	    if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
@@ -98,8 +99,10 @@ Maintaining extensions requires you to teach your harvesters to carry energy not
 Refine the logic in the module role.harvester.
 
 var roleHarvester = {
+    
 
     /** @param {Creep} creep **/
+/**    
     run: function(creep) {
 	    if(creep.store.getFreeCapacity() > 0) {
             var sources = creep.room.find(FIND_SOURCES);
