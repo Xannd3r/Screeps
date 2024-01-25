@@ -1,0 +1,25 @@
+===================Spawn screep via console===================
+
+========================Baseline Creeps=======================
+
+Harvesters:
+Game.spawns['Spawn1'].spawnCreep( [WORK, CARRY, MOVE], 'Harvester#' );
+
+Upgraders:
+Game.spawns['Spawn1'].spawnCreep( [WORK, CARRY, MOVE], 'Upgrader#' );
+
+Builders:
+Game.spawns['Spawn1'].spawnCreep( [WORK, CARRY, MOVE], 'Builder#' );
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+========================Creep Memory=======================
+
+Harvester:
+Game.creeps['Harvester#'].memory.role = 'harvester';
+
+Upgrader:
+Game.creeps['Upgrader#'].memory.role = 'upgrader';
+
+Builder:
+Game.creeps['Builder#'].memory.role = 'builder';
