@@ -1,25 +1,37 @@
-===================Spawn screep via console===================
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+|===================Spawn screep via console===================|
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+First line = Creep Spawn
+Second line = Creep Memory
+
+Example:
+|||Game.spawns['Spawn1'].spawnCreep( [WORK, CARRY, MOVE], 'Harvester#' );||| - Spawn script
+|||Game.creeps['Harvester#'].memory.role = 'harvester';||| - Memory script
+
 
 ========================Baseline Creeps=======================
 
 Harvesters:
 Game.spawns['Spawn1'].spawnCreep( [WORK, CARRY, MOVE], 'Harvester#' );
+Game.creeps['Harvester#'].memory.role = 'harvester';
 
 Upgraders:
 Game.spawns['Spawn1'].spawnCreep( [WORK, CARRY, MOVE], 'Upgrader#' );
+Game.creeps['Upgrader#'].memory.role = 'upgrader';
 
 Builders:
 Game.spawns['Spawn1'].spawnCreep( [WORK, CARRY, MOVE], 'Builder#' );
-
-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-========================Creep Memory=======================
-
-Harvester:
-Game.creeps['Harvester#'].memory.role = 'harvester';
-
-Upgrader:
-Game.creeps['Upgrader#'].memory.role = 'upgrader';
-
-Builder:
 Game.creeps['Builder#'].memory.role = 'builder';
+
+
+========================Better Creeps=======================
+
+Harvesters:
+Game.spawns['Spawn1'].spawnCreep( [WORK, WORK, WORK, CARRY, MOVE, MOVE], 'Harvester#' );
+
+Upgraders:
+Game.spawns['Spawn1'].spawnCreep( [WORK, WORK, WORK, CARRY, MOVE, MOVE], 'Upgrader#' );
+
+Builders:
+Game.spawns['Spawn1'].spawnCreep( [WORK, WORK, WORK, CARRY, MOVE, MOVE], 'Builder#' );
