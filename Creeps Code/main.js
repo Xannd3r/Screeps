@@ -39,7 +39,7 @@ module.exports.loop = function () {
 function spawnCreep(role) {
     // Define body parts for harvesters and upgraders
     var harvesterBody = [WORK, WORK, WORK, CARRY, MOVE];
-    var upgraderBody = [WORK, WORK, WORK, CARRY, MOVE];
+    var upgraderBody = [WORK, WORK, WORK, CARRY, CARRY, MOVE];
 
     // Generate a unique name for the new creep
     var newName = role.charAt(0).toUpperCase() + role.slice(1) + Game.time;
