@@ -1,16 +1,19 @@
 // Import required modules
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
+var roleBuilder = require('role.builder');
 
 // Main loop
 module.exports.loop = function () {
     // Count existing creeps for each role
     var harvesterCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'harvester').length;
     var upgraderCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'upgrader').length;
+    var builderCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'builder').length;
 
-    // Desired number of harvesters and upgraders
+    // Desired number of each role
     var desiredHarvesters = 2;
-    var desiredUpgraders = 4;
+    var desiredUpgraders = 2;
+    var desiredBuilders = 2;
 
     // Spawn new harvesters if needed
     if (harvesterCount < desiredHarvesters) {
@@ -22,6 +25,11 @@ module.exports.loop = function () {
         spawnCreep('upgrader');
     }
 
+    // Spawn new builders if needed
+    if (builderCount < desiredBuilders) {
+        spawnCreep('builder');
+    }
+
     // Run logic for existing creeps
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -31,15 +39,18 @@ module.exports.loop = function () {
             roleHarvester.run(creep);
         } else if (creep.memory.role === 'upgrader') {
             roleUpgrader.run(creep);
+        } else if (creep.memory.role === 'builder') {
+            roleBuilder.run(creep);
         }
     }
 };
 
 // Function to spawn a creep
 function spawnCreep(role) {
-    // Define body parts for harvesters and upgraders
-    var harvesterBody = [WORK, WORK, WORK, CARRY, MOVE];
-    var upgraderBody = [WORK, WORK, WORK, CARRY, CARRY, MOVE];
+    // Define body parts for each role
+    var harvesterBody = [WORK, CARRY, MOVE];
+    var upgraderBody = [WORK, CARRY, MOVE];
+    var builderBody = [WORK, CARRY, MOVE];
 
     // Generate a unique name for the new creep
     var newName = role.charAt(0).toUpperCase() + role.slice(1) + Game.time;
@@ -50,6 +61,8 @@ function spawnCreep(role) {
         body = harvesterBody;
     } else if (role === 'upgrader') {
         body = upgraderBody;
+    } else if (role === 'builder') {
+        body = builderBody;
     }
 
     // Spawn the new creep
