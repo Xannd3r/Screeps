@@ -1,20 +1,19 @@
 var roleHarvester = {
-
-    /** @param {Creep} creep **/
-
-    run: function(creep) {
-	    if(creep.store.getFreeCapacity() > 0) {
-            var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0]);
+    run: function (creep) {
+        // Example harvester logic: harvest energy from sources and transfer it to structures
+        var source = creep.pos.findClosestByPath(FIND_SOURCES);
+        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
+        } else {
+            // Transfer energy to a nearby structure, e.g., an extension
+            var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+                filter: (structure) => structure.structureType === STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity
+            });
+            if (target) {
+                if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
+                }
             }
         }
-        else {
-            if(creep.transfer(Game.spawns['Spawn1'], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.spawns['Spawn1']);
-            }
-        }
-	}
+    }
 };
-
-module.exports = roleHarvester;
