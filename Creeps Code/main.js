@@ -11,9 +11,9 @@ module.exports.loop = function () {
     var builderCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'builder').length;
 
     // Desired number of each role
-    var desiredHarvesters = 2;
-    var desiredUpgraders = 2;
-    var desiredBuilders = 2;
+    var desiredHarvesters = 3;
+    var desiredUpgraders = 4;
+    var desiredBuilders = 4;
 
     // Spawn new harvesters if needed
     if (harvesterCount < desiredHarvesters) {
@@ -49,8 +49,8 @@ module.exports.loop = function () {
 function spawnCreep(role) {
     // Define body parts for each role
     var harvesterBody = [WORK, CARRY, MOVE];
-    var upgraderBody = [WORK, CARRY, MOVE];
-    var builderBody = [WORK, CARRY, MOVE];
+    var upgraderBody = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE];
+    var builderBody = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE];
 
     // Generate a unique name for the new creep
     var newName = role.charAt(0).toUpperCase() + role.slice(1) + Game.time;
