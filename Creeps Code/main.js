@@ -11,9 +11,9 @@ module.exports.loop = function () {
     var builderCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'builder').length;
 
     // Desired number of each role
-    var desiredHarvesters = 3;
+    var desiredHarvesters = 4;
     var desiredUpgraders = 4;
-    var desiredBuilders = 4;
+    var desiredBuilders = 5;
 
     // Spawn new harvesters if needed
     if (harvesterCount < desiredHarvesters) {
