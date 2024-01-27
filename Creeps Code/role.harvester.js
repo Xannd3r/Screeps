@@ -1,20 +1,31 @@
-var roleHarvester = {
-    run: function (creep) {
-        // Example harvester logic: harvest energy from sources and transfer it to structures
-        var source = creep.pos.findClosestByPath(FIND_SOURCES);
-        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
+const roleHarvester = {
+    run: function(creep) {
+        if(creep.store.getFreeCapacity() > 0) {
+            const sources = creep.room.find(FIND_SOURCES);
+            if(creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
         } else {
-            // Transfer energy to a nearby structure, e.g., an extension
-            var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-                filter: (structure) => structure.structureType === STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity
+            const targets = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.structureType === STRUCTURE_EXTENSION ||
+                        structure.structureType === STRUCTURE_SPAWN ||
+                        structure.structureType === STRUCTURE_TOWER) &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
             });
-            if (target) {
-                if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
+            if(targets.length > 0) {
+                if(creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
         }
+    },
+
+    spawnCreep: function() {
+        const newName = 'Harvester' + Game.time;
+        console.log('Spawning new harvester: ' + newName);
+        Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE], newName, {memory: {role: 'harvester'}});
     }
 };
 

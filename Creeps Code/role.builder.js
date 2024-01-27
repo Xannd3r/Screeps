@@ -1,50 +1,45 @@
-var roleBuilder = {
-    run: function (creep) {
-        // If the creep is carrying resources, it will try to build
-        if (creep.memory.building && creep.store[RESOURCE_ENERGY] > 0) {
-            // Find construction sites
-            var constructionSites = creep.room.find(FIND_CONSTRUCTION_SITES);
+const roleBuilder = {
+    /** @param {Creep} creep **/
+    run: function(creep) {
+        if (creep.memory.building && creep.store[RESOURCE_ENERGY] === 0) {
+            creep.memory.building = false;
+            creep.say('🔄 harvest');
+        }
+        if (!creep.memory.building && creep.store.getFreeCapacity() === 0) {
+            creep.memory.building = true;
+            creep.say('🚧 build');
+        }
 
-            if (constructionSites.length > 0) {
-                // Move to and build the first construction site
-                if (creep.build(constructionSites[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(constructionSites[0], { visualizePathStyle: { stroke: '#ffffff' } });
+        if (creep.memory.building) {
+            const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+            if (targets.length) {
+                if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });
                 }
             } else {
-                // If no construction sites, perform repair tasks
-                roleBuilder.repair(creep);
+                // If no construction sites, repair structures
+                const structuresToRepair = creep.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => structure.hits < structure.hitsMax
+                });
+
+                if (structuresToRepair.length > 0) {
+                    if (creep.repair(structuresToRepair[0]) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(structuresToRepair[0], { visualizePathStyle: { stroke: '#ffaa00' } });
+                    }
+                }
             }
-        }
-        // If the creep is not carrying resources, it will gather them
-        else {
-            roleBuilder.harvest(creep);
+        } else {
+            const sources = creep.room.find(FIND_SOURCES);
+            if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources[0], { visualizePathStyle: { stroke: '#ffaa00' } });
+            }
         }
     },
 
-    // Function for the builder to gather resources
-    harvest: function (creep) {
-        // Find energy sources (e.g., energy containers, harvesters, etc.)
-        var sources = creep.room.find(FIND_SOURCES);
-
-        // Move to and harvest energy from the first source
-        if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(sources[0], { visualizePathStyle: { stroke: '#ffaa00' } });
-        }
-    },
-
-    // Function for the builder to repair structures
-    repair: function (creep) {
-        // Find structures that need repair
-        var targets = creep.room.find(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
-        });
-
-        // If there are structures to repair, move to and repair the first one
-        if (targets.length > 0) {
-            if (creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });
-            }
-        }
+    spawnCreep: function() {
+        const newName = 'Builder' + Game.time;
+        console.log('Spawning new builder: ' + newName);
+        Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE], newName, { memory: { role: 'builder', building: false } });
     }
 };
 

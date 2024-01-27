@@ -1,40 +1,35 @@
-// Import required modules
-var roleHarvester = require('role.harvester');
-var roleUpgrader = require('role.upgrader');
-var roleBuilder = require('role.builder');
+const roleHarvester = require('role.harvester');
+const roleUpgrader = require('role.upgrader');
+const roleBuilder = require('role.builder');
 
-// Main loop
 module.exports.loop = function () {
-    // Count existing creeps for each role
-    var harvesterCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'harvester').length;
-    var upgraderCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'upgrader').length;
-    var builderCount = _.filter(Game.creeps, (creep) => creep.memory.role === 'builder').length;
-
-    // Desired number of each role
-    var desiredHarvesters = 2;
-    var desiredUpgraders = 2;
-    var desiredBuilders = 2;
-
-    // Spawn new harvesters if needed
-    if (harvesterCount < desiredHarvesters) {
-        spawnCreep('harvester');
+    // Clear memory of dead creeps
+    for (let name in Memory.creeps) {
+        if (!Game.creeps[name]) {
+            delete Memory.creeps[name];
+        }
     }
 
-    // Spawn new upgraders if needed
-    if (upgraderCount < desiredUpgraders) {
-        spawnCreep('upgrader');
+    // Automatic spawning
+    const minimumHarvesters = 2;
+    const minimumUpgraders = 2;
+    const minimumBuilders = 1;
+
+    const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role === 'harvester');
+    const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role === 'upgrader');
+    const builders = _.filter(Game.creeps, (creep) => creep.memory.role === 'builder');
+
+    if (harvesters.length < minimumHarvesters) {
+        roleHarvester.spawnCreep();
+    } else if (upgraders.length < minimumUpgraders) {
+        roleUpgrader.spawnCreep();
+    } else if (builders.length < minimumBuilders) {
+        roleBuilder.spawnCreep();
     }
 
-    // Spawn new builders if needed
-    if (builderCount < desiredBuilders) {
-        spawnCreep('builder');
-    }
-
-    // Run logic for existing creeps
-    for (var name in Game.creeps) {
-        var creep = Game.creeps[name];
-
-        // Run role-specific logic
+    // Execute roles for each creep
+    for (let name in Game.creeps) {
+        const creep = Game.creeps[name];
         if (creep.memory.role === 'harvester') {
             roleHarvester.run(creep);
         } else if (creep.memory.role === 'upgrader') {
@@ -44,34 +39,3 @@ module.exports.loop = function () {
         }
     }
 };
-
-// Function to spawn a creep
-function spawnCreep(role) {
-    // Define body parts for each role
-    var harvesterBody = [WORK, CARRY, MOVE];
-    var upgraderBody = [WORK, CARRY, MOVE];
-    var builderBody = [WORK, CARRY, MOVE];
-
-    // Generate a unique name for the new creep
-    var newName = role.charAt(0).toUpperCase() + role.slice(1) + Game.time;
-
-    // Choose body parts based on the role
-    var body;
-    if (role === 'harvester') {
-        body = harvesterBody;
-    } else if (role === 'upgrader') {
-        body = upgraderBody;
-    } else if (role === 'builder') {
-        body = builderBody;
-    }
-
-    // Spawn the new creep
-    var spawnResult = Game.spawns['Spawn1'].spawnCreep(body, newName, { memory: { role: role } });
-
-    // Log spawn result
-    if (spawnResult === OK) {
-        console.log('Spawning new ' + role + ': ' + newName);
-    } else {
-        console.log('Error spawning ' + role + ': ' + spawnResult);
-    }
-}
