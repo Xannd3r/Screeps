@@ -12,7 +12,7 @@ module.exports.loop = function () {
 
     // Automatic spawning
     const minimumHarvesters = 2;
-    const minimumUpgraders = 2;
+    const minimumUpgraders = 1;
     const minimumBuilders = 1;
 
     const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role === 'harvester');
@@ -20,11 +20,11 @@ module.exports.loop = function () {
     const builders = _.filter(Game.creeps, (creep) => creep.memory.role === 'builder');
 
     if (harvesters.length < minimumHarvesters) {
-        roleHarvester.spawnCreep();
+        spawnCreep('harvester', [WORK, CARRY, MOVE]);
     } else if (upgraders.length < minimumUpgraders) {
-        roleUpgrader.spawnCreep();
+        spawnCreep('upgrader', [WORK, CARRY, MOVE]);
     } else if (builders.length < minimumBuilders) {
-        roleBuilder.spawnCreep();
+        spawnCreep('builder', [WORK, CARRY, MOVE]);
     }
 
     // Execute roles for each creep
@@ -39,3 +39,9 @@ module.exports.loop = function () {
         }
     }
 };
+
+function spawnCreep(role, body) {
+    const newName = role.charAt(0).toUpperCase() + role.slice(1) + Game.time;
+    console.log('Spawning new ' + role + ': ' + newName);
+    Game.spawns['Spawn1'].spawnCreep(body, newName, { memory: { role: role } });
+}
